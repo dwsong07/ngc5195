@@ -1,7 +1,7 @@
 CREATE TABLE warned(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id TEXT NOT NULL,
-    timestamp TEXT NOT NULL,
+    timestamp INTEGER NOT NULL,
     count INTEGER NOT NULL,
     reason TEXT,
     server_id TEXT NOT NULL

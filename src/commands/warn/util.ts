@@ -8,7 +8,7 @@ export async function warnUser(
     reason?: string
 ) {
     await db.run(
-        "INSERT INTO warned(user_id, count, reason, server_id, timestamp) VALUES(?, ?, ?, ?, datetime('now'))",
+        "INSERT INTO warned(user_id, count, reason, server_id, timestamp) VALUES(?, ?, ?, ?, strftime('%s', 'now'))",
         userId,
         count,
         reason,
