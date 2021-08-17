@@ -33,7 +33,7 @@ export default {
                 .setDescription(`총 경고 수: ${totalWarn}`)
                 .addFields(
                     warned.map((item) => ({
-                        name: `${time(new Date(item.timestamp * 1000))}`,
+                        name: `${time(item.timestamp)}`,
                         value: `${
                             item.count > 0
                                 ? "**경고** 수: "

@@ -6,6 +6,7 @@ import { token } from "../config.json";
 import Button from "./components/Button";
 import SelectMenu from "./components/SelectMenu";
 import { dbInit } from "./db";
+import muteInterval from "./muteInterval";
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -26,6 +27,9 @@ client.once("ready", async () => {
     // DB Init
     const db = await dbInit();
     client.db = db;
+
+    // Mute Interval
+    muteInterval(client);
 
     client.user?.setActivity("어딘가에서 일하는 중");
 });
