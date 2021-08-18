@@ -1,4 +1,4 @@
-import { Client, Intents } from "discord.js";
+import { Client, Intents, TextChannel } from "discord.js";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import commands from "./commands";
@@ -8,12 +8,15 @@ import SelectMenu from "./components/SelectMenu";
 import { dbInit } from "./db";
 import muteInterval from "./muteInterval";
 import roleSelector from "./roleSelector";
+import messageLog from "./commands/messageLog";
+import { userMention } from "@discordjs/builders";
 
 const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_MESSAGES,
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+        Intents.FLAGS.GUILD_MEMBERS,
     ],
     partials: ["MESSAGE", "USER", "REACTION"],
 });
@@ -36,6 +39,9 @@ client.once("ready", async () => {
 
     // Mute Interval
     muteInterval(client);
+
+    // Message Log
+    messageLog(client);
 
     client.user?.setActivity("어딘가에서 일하는 중");
 });
@@ -87,6 +93,32 @@ client.on("messageReactionAdd", (reaction, user) => {
 
 client.on("messageReactionRemove", (reaction, user) => {
     roleSelector(reaction, user, false);
+});
+
+client.on("guildMemberAdd", (member) => {
+    const welcomeChannel = member.guild.channels.cache.find(
+        (channel) =>
+            channel.type === "GUILD_TEXT" &&
+            (channel as TextChannel).topic === "WELCOME_CHANNEL"
+    ) as TextChannel;
+
+    if (!welcomeChannel) return;
+
+    welcomeChannel.send(`Welcome! ${userMention(member.id)}`);
+});
+
+client.on("guildMemberRemove", (member) => {
+    if (member.partial) member.fetch();
+
+    const welcomeChannel = member.guild.channels.cache.find(
+        (channel) =>
+            channel.type === "GUILD_TEXT" &&
+            (channel as TextChannel).topic === "WELCOME_CHANNEL"
+    ) as TextChannel;
+
+    if (!welcomeChannel) return;
+
+    welcomeChannel.send(`Bye.. **${member.user?.tag}**`);
 });
 
 client.login(token);
