@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { NewsChannel, TextChannel, GuildMember } from "discord.js";
 import { Command } from "../../types";
+import permission from "../permission";
 
 export default {
     data: new SlashCommandBuilder()
@@ -14,12 +15,7 @@ export default {
         ),
     async execute(interaction) {
         try {
-            if (
-                !(interaction.member as GuildMember).permissions.has(
-                    "MANAGE_MESSAGES"
-                )
-            )
-                return interaction.reply("권한이 없습니다.");
+            if (!(await permission(interaction, "MANAGE_MESSAGES"))) return;
 
             const num = interaction.options.getInteger("수")!;
             if (num <= 0) return interaction.reply("자연수..");

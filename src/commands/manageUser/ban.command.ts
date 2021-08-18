@@ -1,6 +1,7 @@
 import { SlashCommandBuilder, userMention } from "@discordjs/builders";
 import { GuildMember } from "discord.js";
 import { Command } from "../../types";
+import permission from "../permission";
 
 export default {
     data: new SlashCommandBuilder()
@@ -14,15 +15,7 @@ export default {
         ),
     async execute(interaction) {
         try {
-            if (interaction.channel?.type === "DM")
-                interaction.reply("DM 채널에서는 사용할 수 없습니다.");
-
-            if (
-                !(interaction.member as GuildMember).permissions.has(
-                    "BAN_MEMBERS"
-                )
-            )
-                return interaction.reply("권한이 없습니다.");
+            if (!(await permission(interaction, "BAN_MEMBERS"))) return;
 
             const user = interaction.options.getUser("유저");
             const reason = interaction.options.getString("사유")!;

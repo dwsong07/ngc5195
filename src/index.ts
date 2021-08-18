@@ -7,9 +7,15 @@ import Button from "./components/Button";
 import SelectMenu from "./components/SelectMenu";
 import { dbInit } from "./db";
 import muteInterval from "./muteInterval";
+import roleSelector from "./roleSelector";
 
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    ],
+    partials: ["MESSAGE", "USER", "REACTION"],
 });
 
 console.log(process.env.NODE_ENV);
@@ -73,6 +79,14 @@ client.on("interactionCreate", async (interaction) => {
         console.error(err);
         await interaction.reply("에러 났어요!");
     }
+});
+
+client.on("messageReactionAdd", (reaction, user) => {
+    roleSelector(reaction, user, true);
+});
+
+client.on("messageReactionRemove", (reaction, user) => {
+    roleSelector(reaction, user, false);
 });
 
 client.login(token);
