@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: "messier11",
+            name: "ngc5195",
             script: "./build/src",
             watch: false,
             env: {
