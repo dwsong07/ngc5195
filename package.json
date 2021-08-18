@@ -30,9 +30,9 @@
         "build": "tsc",
         "clean": "rm -rf build",
         "start": "pm2 start ecosystem.config.js",
-        "stop": "pm2 stop messier11",
-        "logs": "pm2 logs messier11",
-        "monit": "pm2 monit messier11",
+        "stop": "pm2 stop ngc5195",
+        "logs": "pm2 logs ngc5195",
+        "monit": "pm2 monit ngc5195",
         "db_dev_init": "rm -f data.db && sqlite3 data.db < init.sql",
         "db_prod_init": "rm -f data.db && sqlite3 build/data.db < init.sql"
     }
