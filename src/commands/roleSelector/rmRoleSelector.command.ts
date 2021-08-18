@@ -4,7 +4,7 @@ import permission from "../permission";
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("rm_rss_selector")
+        .setName("rm_role_selector")
         .setDescription("Remove roleSelector")
         .addStringOption((option) =>
             option
