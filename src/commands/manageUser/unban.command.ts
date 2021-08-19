@@ -6,35 +6,33 @@ import permission from "../permission";
 export default {
     data: new SlashCommandBuilder()
         .setName("unban")
-        .setDescription("유저를 밴 해제합니다.")
+        .setDescription("Unban a user")
         .addStringOption((option) =>
             option
-                .setName("유저_아이디")
-                .setDescription("유저 아이디")
+                .setName("user_id")
+                .setDescription("The user's id")
                 .setRequired(true)
         )
         .addStringOption((option) =>
-            option.setName("사유").setDescription("사유")
+            option.setName("reason").setDescription("reason")
         ),
     async execute(interaction) {
         try {
             if (!(await permission(interaction, "BAN_MEMBERS"))) return;
 
-            const user = interaction.options.getString("유저_아이디");
-            const reason = interaction.options.getString("사유")!;
+            const user = interaction.options.getString("user_id");
+            const reason = interaction.options.getString("reason")!;
 
             const unbannedUser = await interaction.guild?.members
                 .unban(user!, reason)
-                .catch(() =>
-                    interaction.reply("존재하지 않는 유저 아이디입니다.")
-                );
+                .catch(() => interaction.reply("That user id doesn't exist"));
 
             if (!unbannedUser) return;
 
-            interaction.reply(`${userMention(user!)}님을 밴 해제했습니다.`);
+            interaction.reply(`**${unbannedUser.tag}** has been unbanned.`);
         } catch (err) {
             console.error(err);
-            interaction.reply("에러 났어요!");
+            interaction.reply("Error occurred!");
         }
     },
 } as Command;

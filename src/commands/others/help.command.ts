@@ -16,7 +16,7 @@ function makeHelpEmbed(
     user: User
 ) {
     return new MessageEmbed()
-        .setTitle(`도움말 ${currentPage + 1}/${pageLength}`)
+        .setTitle(`Help! ${currentPage + 1}/${pageLength}`)
         .addFields(
             commands.map((command) => ({
                 name: `\`${command.name ?? ""}\``,
@@ -28,7 +28,7 @@ function makeHelpEmbed(
 }
 
 export default {
-    data: new SlashCommandBuilder().setName("help").setDescription("도움말"),
+    data: new SlashCommandBuilder().setName("help").setDescription("help"),
     async execute(interaction) {
         try {
             const commandDatas = interaction.client.commands.map(
@@ -72,7 +72,7 @@ export default {
             const itIsNotForYou = (i: ButtonInteraction) => {
                 if (i.user?.id !== interaction.user.id) {
                     i.reply({
-                        content: "직접 /help 하세요",
+                        content: "run `/help` yourself",
                         ephemeral: true,
                     });
                     return true;
@@ -127,7 +127,7 @@ export default {
             }, 60000);
         } catch (err) {
             console.error(err);
-            interaction.reply("에러 났어요!");
+            interaction.reply("Error occurred!");
         }
     },
 } as Command;

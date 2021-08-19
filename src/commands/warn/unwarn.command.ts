@@ -7,28 +7,28 @@ import { getTotalWarn, warnUser } from "./util";
 export default {
     data: new SlashCommandBuilder()
         .setName("unwarn")
-        .setDescription("유저를 경고 해제합니다.")
+        .setDescription("Unwarn a user")
         .addUserOption((option) =>
-            option.setName("유저").setDescription("유저").setRequired(true)
+            option.setName("user").setDescription("user").setRequired(true)
         )
         .addIntegerOption((option) =>
             option
-                .setName("경고_해제_수")
-                .setDescription("경고 해제 수")
+                .setName("unwarn_num")
+                .setDescription("unwarn num")
                 .setRequired(true)
         )
         .addStringOption((option) =>
-            option.setName("사유").setDescription("사유")
+            option.setName("reason").setDescription("reason")
         ),
     async execute(interaction) {
         try {
             if (!(await permission(interaction, "BAN_MEMBERS"))) return;
 
-            const user = interaction.options.getUser("유저")!;
-            let count = interaction.options.getInteger("경고_해제_수")!;
-            const reason = interaction.options.getString("사유") ?? undefined;
+            const user = interaction.options.getUser("user")!;
+            let count = interaction.options.getInteger("unwarn_num")!;
+            const reason = interaction.options.getString("reason") ?? undefined;
 
-            if (count <= 0) return interaction.reply("자연수로 입력해주세요");
+            if (count <= 0) return interaction.reply("wtf?");
 
             const beforeTotalWarn = await getTotalWarn(
                 interaction.client.db,
@@ -54,11 +54,11 @@ export default {
             interaction.reply(
                 `${userMention(
                     user.id
-                )}님을 경고 해제 했습니다. 총 경고 수: ${afterTotal}`
+                )} has been unwarned. total warn count: ${afterTotal}`
             );
         } catch (err) {
             console.error(err);
-            interaction.reply("에러 났어요!");
+            interaction.reply("Error occurred!");
         }
     },
 } as Command;

@@ -7,14 +7,14 @@ import permission from "../permission";
 export default {
     data: new SlashCommandBuilder()
         .setName("mute")
-        .setDescription("유저를 뮤트합니다.")
+        .setDescription("mute a user")
         .addUserOption((option) =>
-            option.setName("유저").setDescription("유저").setRequired(true)
+            option.setName("user").setDescription("user").setRequired(true)
         )
         .addStringOption((option) =>
             option
-                .setName("시간")
-                .setDescription("10m, 2h, 7d처럼")
+                .setName("time")
+                .setDescription("ex) 10m, 2h, 7d")
                 .setRequired(true)
         ),
     async execute(interaction) {
@@ -22,12 +22,12 @@ export default {
             if (!(await permission(interaction, "MANAGE_ROLES"))) return;
 
             const member = interaction.options.getMember(
-                "유저"
+                "user"
             )! as GuildMember;
-            const timeInput = interaction.options.getString("시간")!;
+            const timeInput = interaction.options.getString("time")!;
 
             if (isNaN(ms(timeInput)))
-                return interaction.reply("시간을 다시 입력해주세요");
+                return interaction.reply("The time you inputed isn't valid.");
 
             const ids = await interaction.client.db.all(
                 "SELECT user_id FROM muted WHERE user_id = ? AND server_id = ?",
@@ -35,13 +35,15 @@ export default {
                 interaction.guild?.id
             );
 
-            if (ids.length) return interaction.reply("이미 뮤트되어 있습니다.");
+            if (ids.length)
+                return interaction.reply("The user is already muted.");
 
             const mutedRole = interaction.guild?.roles.cache.find(
                 (role) => role.name === "Muted"
             );
 
-            if (!mutedRole) return interaction.reply("Muted 역할이 없어요!");
+            if (!mutedRole)
+                return interaction.reply("I can't find Muted role!");
 
             member.roles.add(mutedRole.id);
 
@@ -59,13 +61,13 @@ export default {
             );
 
             interaction.reply(
-                `${userMention(member.id)}님을 뮤트했습니다. (${time(
+                `${userMention(member.id)} has been muted. (until ${time(
                     expireUnixTime
-                )}까지)`
+                )})`
             );
         } catch (err) {
             console.error(err);
-            interaction.reply("에러 났어요!");
+            interaction.reply("Error occurred!");
         }
     },
 } as Command;

@@ -17,7 +17,7 @@ export default {
             );
 
             const embed = new MessageEmbed()
-                .setTitle("roleSelector 리스트")
+                .setTitle("roleSelector List")
                 .addFields(
                     table.map(({ msg_id, emoji_id, role_id, is_one_time }) => ({
                         name: `${msg_id}, ${emoji_id}`,
@@ -30,7 +30,7 @@ export default {
                 )
                 .setTimestamp();
 
-            interaction.reply({ embeds: [embed] });
+            interaction.reply({ embeds: [embed], ephemeral: true });
         } catch (err) {
             console.error(err);
             interaction.reply("Error occurred!");

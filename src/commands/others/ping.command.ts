@@ -3,7 +3,7 @@ import { Message } from "discord.js";
 import { Command } from "../../types";
 
 export default {
-    data: new SlashCommandBuilder().setName("ping").setDescription("핑퐁"),
+    data: new SlashCommandBuilder().setName("ping").setDescription("ping pong"),
     async execute(interaction) {
         const sent = (await interaction.reply({
             content: "Pinging..",

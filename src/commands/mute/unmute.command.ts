@@ -7,16 +7,16 @@ import unmute from "./util";
 export default {
     data: new SlashCommandBuilder()
         .setName("unmute")
-        .setDescription("유저를 뮤트 해제합니다.")
+        .setDescription("Unmute a user")
         .addUserOption((option) =>
-            option.setName("유저").setDescription("유저").setRequired(true)
+            option.setName("user").setDescription("user").setRequired(true)
         ),
     async execute(interaction) {
         try {
             if (!(await permission(interaction, "MANAGE_ROLES"))) return;
 
             const member = interaction.options.getMember(
-                "유저"
+                "user"
             )! as GuildMember;
 
             if (
@@ -26,14 +26,12 @@ export default {
                     interaction.guild?.id as string
                 ))
             )
-                return interaction.reply("뮤트되어 있지 않습니다.");
+                return interaction.reply("The user isn't muted.");
 
-            interaction.reply(
-                `${userMention(member.id)}님을 뮤트 해제 했습니다.`
-            );
+            interaction.reply(`${userMention(member.id)} has been unmuted.`);
         } catch (err) {
             console.error(err);
-            interaction.reply("에러 났어요!");
+            interaction.reply("Error occurred!");
         }
     },
 } as Command;

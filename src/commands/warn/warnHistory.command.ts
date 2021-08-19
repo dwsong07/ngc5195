@@ -5,17 +5,19 @@ import { Command } from "../../types";
 export default {
     data: new SlashCommandBuilder()
         .setName("warn_history")
-        .setDescription("경고 히스토리를 봅니다.")
+        .setDescription("Get warn history")
         .addUserOption((option) =>
-            option.setName("유저").setDescription("유저")
+            option.setName("user").setDescription("user")
         ),
     async execute(interaction) {
         try {
             if (interaction.channel?.type === "DM")
-                return interaction.reply("DM 채널에서는 사용할 수 없습니다.");
+                return interaction.reply(
+                    "You can't use this command in DM channel"
+                );
 
             const user =
-                interaction.options.getUser("유저") ?? interaction.user;
+                interaction.options.getUser("user") ?? interaction.user;
 
             const warned = await interaction.client.db.all(
                 "SELECT count, timestamp, reason FROM warned WHERE user_id = ? AND server_id = ?",
@@ -29,17 +31,17 @@ export default {
             );
 
             const embed = new MessageEmbed()
-                .setTitle(`${user.tag}님의 경고 히스토리`)
-                .setDescription(`총 경고 수: ${totalWarn}`)
+                .setTitle(`${user.tag}'s warn history`)
+                .setDescription(`total: ${totalWarn}`)
                 .addFields(
                     warned.map((item) => ({
                         name: `${time(item.timestamp)}`,
                         value: `${
                             item.count > 0
-                                ? "**경고** 수: "
-                                : "**경고 해제** 수: "
-                        } ${Math.abs(item.count)}\n사유: ${
-                            item.reason || "(없음)"
+                                ? "**warn** num: "
+                                : "**unwarn** num: "
+                        } ${Math.abs(item.count)}\nreason: ${
+                            item.reason || "(none)"
                         }`,
                     }))
                 );
@@ -47,7 +49,7 @@ export default {
             interaction.reply({ embeds: [embed] });
         } catch (err) {
             console.error(err);
-            interaction.reply("에러 났어요!");
+            interaction.reply("Error occurred!");
         }
     },
 } as Command;

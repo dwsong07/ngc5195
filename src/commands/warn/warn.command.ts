@@ -7,28 +7,28 @@ import permission from "../permission";
 export default {
     data: new SlashCommandBuilder()
         .setName("warn")
-        .setDescription("유저를 경고합니다.")
+        .setDescription("Warn a user")
         .addUserOption((option) =>
-            option.setName("유저").setDescription("유저").setRequired(true)
+            option.setName("user").setDescription("user").setRequired(true)
         )
         .addIntegerOption((option) =>
             option
-                .setName("경고_수")
-                .setDescription("경고 수")
+                .setName("warn_num")
+                .setDescription("warn num")
                 .setRequired(true)
         )
         .addStringOption((option) =>
-            option.setName("사유").setDescription("사유")
+            option.setName("reason").setDescription("reason")
         ),
     async execute(interaction) {
         try {
             if (!(await permission(interaction, "BAN_MEMBERS"))) return;
 
-            const user = interaction.options.getUser("유저")!;
-            const count = interaction.options.getInteger("경고_수")!;
-            const reason = interaction.options.getString("사유") ?? undefined;
+            const user = interaction.options.getUser("user")!;
+            const count = interaction.options.getInteger("warn_num")!;
+            const reason = interaction.options.getString("reason") ?? undefined;
 
-            if (count <= 0) return interaction.reply("자연수로 입력하세요");
+            if (count <= 0) return interaction.reply("wtf?");
 
             await warnUser(
                 interaction.client.db,
@@ -45,24 +45,24 @@ export default {
             );
             if (totalWarn >= 10) {
                 await interaction.guild?.members.ban(user, {
-                    reason: "경고 10개 이상",
+                    reason: "get 10 warns",
                 });
 
                 return interaction.reply(
-                    `총 경고 개수가 10개 이상이므로 ${userMention(
+                    `Total warn count gets over 10 so ${userMention(
                         user.id
-                    )}님을 밴했습니다.`
+                    )} has been banned.`
                 );
             }
 
             interaction.reply(
                 `${userMention(
                     user.id
-                )}님을 경고 했습니다. 총 경고 수: ${totalWarn}`
+                )} has been warned. total warn count: ${totalWarn}`
             );
         } catch (err) {
             console.error(err);
-            interaction.reply("에러 났어요!");
+            interaction.reply("Error occurred!");
         }
     },
 } as Command;
